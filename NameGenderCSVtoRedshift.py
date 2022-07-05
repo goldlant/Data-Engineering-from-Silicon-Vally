@@ -43,7 +43,21 @@ def load(lines):
     cur.execute(sql)
     logging.info(sql)
     logging.info("load done")
-
+	
+	
+'''
+def load(lines):
+    # BEGIN과 END를 사용해서 SQL 결과를 트랜잭션으로 만들어주는 것이 좋음
+    # BEGIN;DELETE FROM (본인의스키마).name_gender;INSERT INTO TABLE VALUES ('KEEYONG', 'MALE');....;END;
+    cur = get_Redshift_connection()
+    for r in lines:
+        if r != '':
+            (name, gender) = r.split(",")
+            print(name, "-", gender)
+            sql = "INSERT INTO keeyong.name_gender VALUES ('{n}', '{g}')".format(n=name, g=gender)
+            print(sql)
+            cur.execute(sql)
+'''
 
 def etl():
     link = "https://s3-geospatial.s3-us-west-2.amazonaws.com/name_gender.csv"
