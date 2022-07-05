@@ -34,11 +34,11 @@ def transform(text):
 def load(lines):
     logging.info("load started")
     cur = get_Redshift_connection()
-    sql = "BEGIN;DELETE FROM keeyong.name_gender;"
+    sql = "BEGIN;DELETE FROM cooltime0608.name_gender;"
     for l in lines:
         if l != '':
             (name, gender) = l.split(",")
-            sql += f"INSERT INTO keeyong.name_gender VALUES ('{name}', '{gender}');"
+            sql += f"INSERT INTO cooltime0608.name_gender VALUES ('{name}', '{gender}');"
     sql += "END;"
     cur.execute(sql)
     logging.info(sql)
@@ -48,15 +48,17 @@ def load(lines):
 '''
 def load(lines):
     # BEGIN과 END를 사용해서 SQL 결과를 트랜잭션으로 만들어주는 것이 좋음
-    # BEGIN;DELETE FROM (본인의스키마).name_gender;INSERT INTO TABLE VALUES ('KEEYONG', 'MALE');....;END;
+    # BEGIN;DELETE FROM (본인의스키마).name_gender;INSERT INTO TABLE VALUES ('Junha', 'MALE');....;END;
     cur = get_Redshift_connection()
-    for r in lines:
-        if r != '':
-            (name, gender) = r.split(",")
-            print(name, "-", gender)
-            sql = "INSERT INTO keeyong.name_gender VALUES ('{n}', '{g}')".format(n=name, g=gender)
-            print(sql)
-            cur.execute(sql)
+    with cur:
+      cur.execute("DELETE FROM cooltime0608.name_gender")
+      for index, r in enumerate(lines):
+          if r != '' and index != 0:
+              (name, gender) = r.split(",")
+              print(name, "-", gender)
+              sql = "INSERT INTO cooltime0608.name_gender VALUES ('{n}', '{g}')".format(n=name, g=gender)
+              print(sql)
+              cur.execute(sql)
 '''
 
 def etl():
